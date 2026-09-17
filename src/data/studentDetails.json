@@ -1,0 +1,158 @@
+[
+  {
+    "id": 1,
+    "date": "2026-08-12",
+    "name": "Aarav Sharma",
+    "courses": [
+      "Mathematics",
+      "Physics",
+      "Chemistry"
+    ],
+    "qualification": "B.Tech Computer Science",
+    "phone": "+91 98765 43210",
+    "remarks": "Excellent student"
+  },
+  {
+    "id": 2,
+    "date": "2026-08-13",
+    "name": "Ishaan Patel",
+    "courses": [
+      "Biology",
+      "Chemistry",
+      "Physics"
+    ],
+    "qualification": "B.Tech Mechanical Engineering",
+    "phone": "+91 98765 43211",
+    "remarks": "Good performance"
+  },
+  {
+    "id": 3,
+    "date": "2026-08-14",
+    "name": "Ananya Verma",
+    "courses": [
+      "Computer Science",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Computer Science",
+    "phone": "+91 98765 43212",
+    "remarks": "Outstanding student"
+  },
+  {
+    "id": 4,
+    "date": "2026-08-15",
+    "name": "Rohan Mehta",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Electrical Engineering",
+    "phone": "+91 98765 43213",
+    "remarks": "Average performance"
+  },
+  {
+    "id": 5,
+    "date": "2026-08-16",
+    "name": "Saanvi Kapoor",
+    "courses": [
+      "Civil Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Civil Engineering",
+    "phone": "+91 98765 43214",
+    "remarks": "Good student"
+  },
+  {
+    "id": 6,
+    "date": "2026-08-17",
+    "name": "Vivaan Reddy",
+    "courses": [
+      "Computer Science",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Computer Science",
+    "phone": "+91 98765 43215",
+    "remarks": "Excellent performance"
+  },
+  {
+    "id": 7,
+    "date": "2026-08-18",
+    "name": "Aadhya Nair",
+    "courses": [
+      "Mechanical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Mechanical Engineering",
+    "phone": "+91 98765 43216",
+    "remarks": "Good student"
+  },
+  {
+    "id": 8,
+    "date": "2026-08-19",
+    "name": "Arjun Desai",
+    "courses": [
+      "Electrical Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Electrical Engineering",
+    "phone": "+91 98765 43217",
+    "remarks": "Average performance"
+  },
+  {
+    "id": 9,
+    "date": "2026-08-20",
+    "name": "Myra Shah",
+    "courses": [
+      "Civil Engineering",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Civil Engineering",
+    "phone": "+91 98765 43218",
+    "remarks": "Good student"
+  },
+  {
+    "id": 10,
+    "date": "2026-08-21",
+    "name": "Kabir Joshi",
+    "courses": [
+      "Computer Science",
+      "Mathematics",
+      "Physics"
+    ],
+    "qualification": "B.Tech Computer Science",
+    "phone": "+91 98765 43219",
+    "remarks": "Outstanding performance"
+  },
+  {
+    "id": 11,
+    "date": "2026-09-17",
+    "name": "ankitha",
+    "courses": [
+      "Mathematics",
+      "Computer Science"
+    ],
+    "qualification": "degree",
+    "phone": "8977118018",
+    "remarks": "good"
+  },
+  {
+    "id": 12,
+    "date": "2026-09-17",
+    "name": "madhavi",
+    "courses": [
+      "Mathematics",
+      "Physics",
+      "Chemistry",
+      "Computer Science"
+    ],
+    "qualification": "b.com computers",
+    "phone": "8885132827",
+    "remarks": "excellent"
+  }
+]

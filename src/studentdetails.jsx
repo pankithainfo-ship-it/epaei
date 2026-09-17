@@ -1,6 +1,7 @@
 import React from 'react'
+import StudentDetailsForm from './stddetailsform.jsx'
 
-const studentdata = [
+const _legacyStudentData = [
   {
     id: 1,
     date: '2026-08-12',
@@ -174,6 +175,15 @@ const styles = {
     fontSize: '2rem',
     letterSpacing: '-0.06em',
   },
+  addButton: {
+    padding: '11px 16px',
+    border: 0,
+    borderRadius: '10px',
+    background: '#23303b',
+    color: '#fff',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
   searchBox: {
     width: '320px',
     maxWidth: '100%',
@@ -228,14 +238,22 @@ const styles = {
   },
 }
 
-const studentdetails = ({ user = 'Student', onLogout }) => {
+const StudentDetails = ({ user = 'Student', onLogout }) => {
   const [student, setStudent] = React.useState([])
+  const [loadError, setLoadError] = React.useState('')
+  const [showForm, setShowForm] = React.useState(false)
   const [currentPage, setCurrentPage] = React.useState(1)
   const [searchTerm, setSearchTerm] = React.useState('')
   const rowsPerPage = 6
 
   React.useEffect(() => {
-    setStudent(studentdata)
+    fetch('http://localhost:3001/api/students')
+      .then((response) => {
+        if (!response.ok) throw new Error('Unable to load student details')
+        return response.json()
+      })
+      .then((records) => setStudent(records))
+      .catch(() => setLoadError('Unable to load student details. Start the API server and try again.'))
   }, [])
 
   const filteredStudents = student.filter((item) => {
@@ -246,6 +264,7 @@ const studentdetails = ({ user = 'Student', onLogout }) => {
     return (
       String(item.id).toLowerCase().includes(searchValue) ||
       item.date.toLowerCase().includes(searchValue) ||
+      item.name.toLowerCase().includes(searchValue) ||
       item.phone.toLowerCase().includes(searchValue)
     )
   })
@@ -270,7 +289,12 @@ const studentdetails = ({ user = 'Student', onLogout }) => {
       <div style={styles.wrapper}>
         <div style={styles.header}>
           <div style={styles.headerRow}>
-            <h1 style={styles.title}>Student Details</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <h1 style={styles.title}>Student Details</h1>
+              <button type="button" style={styles.addButton} onClick={() => setShowForm(true)}>
+                Add new record
+              </button>
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <div style={styles.userInfo}>
@@ -297,6 +321,23 @@ const studentdetails = ({ user = 'Student', onLogout }) => {
             />
           </div>
         </div>
+
+        {showForm && (
+          <StudentDetailsForm
+            onCancel={() => setShowForm(false)}
+            onStudentAdded={(newStudent) => {
+              setStudent((previous) => [...previous, newStudent])
+              setLoadError('')
+              setShowForm(false)
+            }}
+          />
+        )}
+
+        {loadError && (
+          <p role="alert" style={{ margin: '16px 22px 0', color: '#b42318', fontWeight: 600 }}>
+            {loadError}
+          </p>
+        )}
 
         <div style={styles.tableWrap}>
           <table style={styles.table}>
@@ -387,4 +428,4 @@ const studentdetails = ({ user = 'Student', onLogout }) => {
   )
 }
 
-export default studentdetails
+export default StudentDetails
