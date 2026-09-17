@@ -1,0 +1,390 @@
+import React from 'react'
+
+const studentdata = [
+  {
+    id: 1,
+    date: '2026-08-12',
+    name: 'Aarav Sharma',
+    courses: ['Mathematics', 'Physics', 'Chemistry'],
+    qualification: 'B.Tech Computer Science',
+    phone: '+91 98765 43210',
+    remarks: 'Excellent student',
+  },
+  {
+    id: 2,
+    date: '2026-08-13',
+    name: 'Ishaan Patel',
+    courses: ['Biology', 'Chemistry', 'Physics'],
+    qualification: 'B.Tech Mechanical Engineering',
+    phone: '+91 98765 43211',
+    remarks: 'Good performance'
+  },
+  {
+    id: 3,
+    date: '2026-08-14',
+    name: 'Ananya Verma',
+    courses: ['Computer Science', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Computer Science',
+    phone: '+91 98765 43212',
+    remarks: 'Outstanding student',
+  },
+  {
+    id: 4,
+    date: '2026-08-15',
+    name: 'Rohan Mehta',
+    courses: ['Electrical Engineering', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Electrical Engineering',
+    phone: '+91 98765 43213',
+    remarks: 'Average performance',
+  },
+  {
+    id: 5,
+    date: '2026-08-16',
+    name: 'Saanvi Kapoor',
+    courses: ['Civil Engineering', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Civil Engineering',
+    phone: '+91 98765 43214',
+    remarks: 'Good student',
+  },
+  {
+    id: 6,
+    date: '2026-08-17',
+    name: 'Vivaan Reddy',
+    courses: ['Computer Science', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Computer Science',
+    phone: '+91 98765 43215',
+    remarks: 'Excellent performance',
+  },
+  {
+    id: 7,
+    date: '2026-08-18',
+    name: 'Aadhya Nair',
+    courses: ['Mechanical Engineering', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Mechanical Engineering',
+    phone: '+91 98765 43216',
+    remarks: 'Good student',
+  },
+  {
+    id: 8,
+    date: '2026-08-19',
+    name: 'Arjun Desai',
+    courses: ['Electrical Engineering', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Electrical Engineering',
+    phone: '+91 98765 43217',
+    remarks: 'Average performance',
+  },
+  {
+    id: 9,
+    date: '2026-08-20',
+    name: 'Myra Shah',
+    courses: ['Civil Engineering', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Civil Engineering',
+    phone: '+91 98765 43218',
+    remarks: 'Good student',
+  },
+  {
+    id: 10,
+    date: '2026-08-21',
+    name: 'Kabir Joshi',
+    courses: ['Computer Science', 'Mathematics', 'Physics'],
+    qualification: 'B.Tech Computer Science',
+    phone: '+91 98765 43219',
+    remarks: 'Outstanding performance',
+  },
+]
+
+const styles = {
+  page: {
+    background: '#f5f0ea',
+    minHeight: '100vh',
+    padding: '32px 20px',
+    fontFamily: 'Segoe UI, sans-serif',
+  },
+  wrapper: {
+    maxWidth: '1280px',
+    margin: '0 auto',
+    background: '#ffffff',
+    borderRadius: '20px',
+    boxShadow: '0 18px 45px rgba(20, 28, 38, 0.08)',
+    border: '1px solid rgba(17, 24, 39, 0.05)',
+    overflow: 'hidden',
+  },
+  header: {
+    background: 'linear-gradient(135deg, #f8efe3, #f3ece5)',
+    padding: '28px 30px 20px',
+    borderBottom: '1px solid rgba(17, 24, 39, 0.05)',
+  },
+  headerRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '16px',
+    flexWrap: 'wrap',
+  },
+  userInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    background: '#fff',
+    border: '1px solid rgba(17, 24, 39, 0.08)',
+    borderRadius: '12px',
+    padding: '10px 14px',
+  },
+  userBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: '#f1d9b5',
+    color: '#2a2d35',
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
+    fontWeight: 800,
+  },
+  userText: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+    lineHeight: 1.2,
+  },
+  userLabel: {
+    fontSize: '11px',
+    color: '#5d6470',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    fontWeight: 700,
+  },
+  userName: {
+    fontSize: '14px',
+    color: '#23303b',
+    fontWeight: 700,
+  },
+  logoutButton: {
+    padding: '10px 14px',
+    borderRadius: '10px',
+    border: '1px solid rgba(17, 24, 39, 0.1)',
+    background: '#ffffff',
+    color: '#23303b',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
+  title: {
+    margin: 0,
+    color: '#18232e',
+    fontSize: '2rem',
+    letterSpacing: '-0.06em',
+  },
+  searchBox: {
+    width: '320px',
+    maxWidth: '100%',
+    padding: '12px 14px',
+    borderRadius: '12px',
+    border: '1px solid rgba(17, 24, 39, 0.1)',
+    background: '#fff',
+    color: '#23303b',
+    fontSize: '14px',
+    outline: 'none',
+    boxShadow: '0 10px 20px rgba(17, 24, 39, 0.04)',
+  },
+  tableWrap: {
+    overflowX: 'auto',
+    padding: '20px 18px 28px',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    minWidth: '980px',
+    background: '#fff',
+  },
+  th: {
+    textAlign: 'left',
+    padding: '16px 18px',
+    fontSize: '12px',
+    fontWeight: 800,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    background: '#f5f0e8',
+    color: '#5d6470',
+    borderBottom: '1px solid rgba(17, 24, 39, 0.08)',
+  },
+  td: {
+    padding: '16px 18px',
+    borderBottom: '1px solid rgba(17, 24, 39, 0.08)',
+    color: '#23303b',
+    fontSize: '15px',
+    background: '#fff',
+  },
+  row: {
+    transition: 'all 0.2s ease',
+  },
+  badge: {
+    display: 'inline-block',
+    padding: '6px 10px',
+    borderRadius: '999px',
+    background: '#edf9f1',
+    color: '#1e8d61',
+    fontWeight: 700,
+    fontSize: '12px',
+  },
+}
+
+const studentdetails = ({ user = 'Student', onLogout }) => {
+  const [student, setStudent] = React.useState([])
+  const [currentPage, setCurrentPage] = React.useState(1)
+  const [searchTerm, setSearchTerm] = React.useState('')
+  const rowsPerPage = 6
+
+  React.useEffect(() => {
+    setStudent(studentdata)
+  }, [])
+
+  const filteredStudents = student.filter((item) => {
+    const searchValue = searchTerm.toLowerCase().trim()
+
+    if (!searchValue) return true
+
+    return (
+      String(item.id).toLowerCase().includes(searchValue) ||
+      item.date.toLowerCase().includes(searchValue) ||
+      item.phone.toLowerCase().includes(searchValue)
+    )
+  })
+
+  const totalPages = Math.ceil(filteredStudents.length / rowsPerPage)
+  const safePage = Math.min(currentPage, totalPages || 1)
+  const startIndex = (safePage - 1) * rowsPerPage
+  const currentRows = filteredStudents.slice(startIndex, startIndex + rowsPerPage)
+
+  React.useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm])
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= (totalPages || 1)) {
+      setCurrentPage(page)
+    }
+  }
+
+  return (
+    <div style={styles.page}>
+      <div style={styles.wrapper}>
+        <div style={styles.header}>
+          <div style={styles.headerRow}>
+            <h1 style={styles.title}>Student Details</h1>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={styles.userInfo}>
+                <span style={styles.userBadge}>{user.charAt(0).toUpperCase()}</span>
+                <div style={styles.userText}>
+                  <span style={styles.userLabel}>Logged in</span>
+                  <span style={styles.userName}>{user}</span>
+                </div>
+              </div>
+
+              <button type="button" style={styles.logoutButton} onClick={onLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '18px', display: 'flex', justifyContent: 'flex-end' }}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by ID, date, or phone"
+              style={styles.searchBox}
+            />
+          </div>
+        </div>
+
+        <div style={styles.tableWrap}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>ID</th>
+                <th style={styles.th}>Date</th>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Courses</th>
+                <th style={styles.th}>Qualification</th>
+                <th style={styles.th}>Phone</th>
+                <th style={styles.th}>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRows.length > 0 ? (
+                currentRows.map((s) => (
+                  <tr key={s.id} style={styles.row}>
+                    <td style={styles.td}>{s.id}</td>
+                    <td style={styles.td}>{s.date}</td>
+                    <td style={styles.td}>{s.name}</td>
+                    <td style={styles.td}>{s.courses.join(', ')}</td>
+                    <td style={styles.td}>{s.qualification}</td>
+                    <td style={styles.td}>{s.phone}</td>
+                    <td style={styles.td}>
+                      <span style={styles.badge}>{s.remarks}</span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ ...styles.td, textAlign: 'center', color: '#5d6470' }}>
+                    No student records found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{ padding: '0 22px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <span style={{ color: '#5d6470', fontSize: '14px', fontWeight: 600 }}>
+            Showing {currentRows.length ? (safePage - 1) * rowsPerPage + 1 : 0}-{Math.min(safePage * rowsPerPage, filteredStudents.length)} of {filteredStudents.length}
+          </span>
+
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button
+              type="button"
+              onClick={() => handlePageChange(safePage - 1)}
+              disabled={safePage === 1}
+              style={{
+                padding: '8px 12px',
+                border: '1px solid rgba(17, 24, 39, 0.1)',
+                borderRadius: '10px',
+                background: safePage === 1 ? '#efefef' : '#fff',
+                color: '#23303b',
+                cursor: safePage === 1 ? 'not-allowed' : 'pointer',
+                fontWeight: 600,
+              }}
+            >
+              Prev
+            </button>
+
+            <span style={{ fontSize: '14px', color: '#23303b', fontWeight: 700 }}>
+              Page {safePage} of {totalPages || 1}
+            </span>
+
+            <button
+              type="button"
+              onClick={() => handlePageChange(safePage + 1)}
+              disabled={safePage === totalPages || totalPages === 0}
+              style={{
+                padding: '8px 12px',
+                border: '1px solid rgba(17, 24, 39, 0.1)',
+                borderRadius: '10px',
+                background: safePage === totalPages || totalPages === 0 ? '#efefef' : '#fff',
+                color: '#23303b',
+                cursor: safePage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer',
+                fontWeight: 600,
+              }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default studentdetails

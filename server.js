@@ -1,0 +1,105 @@
+import http from 'http'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const authFilePath = path.join(__dirname, 'src', 'data', 'authUsers.json')
+
+const sendJson = (res, statusCode, payload) => {
+  res.writeHead(statusCode, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  })
+  res.end(JSON.stringify(payload))
+}
+
+const readUsers = () => {
+  const raw = fs.readFileSync(authFilePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+const writeUsers = (users) => {
+  fs.writeFileSync(authFilePath, `${JSON.stringify(users, null, 2)}\n`)
+}
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204)
+    res.end()
+    return
+  }
+
+  if (req.url === '/api/users' && req.method === 'GET') {
+    try {
+      const users = readUsers()
+      sendJson(res, 200, users)
+    } catch (error) {
+      sendJson(res, 500, { message: 'Unable to load users', error: error.message })
+    }
+    return
+  }
+
+  if (req.url === '/api/users' && req.method === 'POST') {
+    let body = ''
+
+    req.on('data', (chunk) => {
+      body += chunk.toString()
+    })
+
+    req.on('end', () => {
+      try {
+        const incomingUser = JSON.parse(body || '{}')
+
+        if (!incomingUser.username || !incomingUser.password) {
+          sendJson(res, 400, { message: 'Username and password are required.' })
+          return
+        }
+
+        const users = readUsers()
+        const userExists = users.some(
+          (user) => user.username.toLowerCase() === incomingUser.username.toLowerCase()
+        )
+
+        if (userExists) {
+          sendJson(res, 409, { message: 'Username already exists.' })
+          return
+        }
+
+        const newUser = {
+          username: incomingUser.username,
+          password: incomingUser.password,
+          role: incomingUser.role || 'student',
+          email: incomingUser.email || '',
+          fullName: incomingUser.fullName || incomingUser.username,
+        }
+
+        const updatedUsers = [...users, newUser]
+        writeUsers(updatedUsers)
+
+        sendJson(res, 201, {
+          message: 'User created successfully',
+          user: newUser,
+          users: updatedUsers,
+        })
+      } catch (error) {
+        sendJson(res, 500, { message: 'Unable to save user', error: error.message })
+      }
+    })
+    return
+  }
+
+  sendJson(res, 404, { message: 'Route not found' })
+})
+
+const port = 3001
+server.listen(port, () => {
+  console.log(`Auth server running on http://localhost:${port}`)
+})

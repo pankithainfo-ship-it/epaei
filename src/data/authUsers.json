@@ -1,0 +1,26 @@
+[
+  {
+    "username": "student",
+    "password": "student123",
+    "role": "student"
+  },
+  {
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "username": "jeevan",
+    "password": "jeevan123",
+    "role": "admin",
+    "email": "pankithainfo@gmail.com",
+    "fullName": "jeevan"
+  },
+  {
+    "username": "ankitha-dev1",
+    "password": "ankitha123",
+    "role": "employee",
+    "email": "pankithainfo@gmail.com",
+    "fullName": "ankitha-developer"
+  }
+]
