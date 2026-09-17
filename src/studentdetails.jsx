@@ -266,9 +266,11 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
       item.date.toLowerCase().includes(searchValue) ||
       item.name.toLowerCase().includes(searchValue) ||
       item.phone.toLowerCase().includes(searchValue) ||
-      item.courses.some((course) => course.toLowerCase().includes(searchValue)) 
+      item.courses.some((course) => course.toLowerCase().includes(searchValue))
     )
-  })
+  } 
+    )
+  }
 
   const totalPages = Math.ceil(filteredStudents.length / rowsPerPage)
   const safePage = Math.min(currentPage, totalPages || 1)
