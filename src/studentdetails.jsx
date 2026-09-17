@@ -265,7 +265,12 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
       String(item.id).toLowerCase().includes(searchValue) ||
       item.date.toLowerCase().includes(searchValue) ||
       item.name.toLowerCase().includes(searchValue) ||
-      item.phone.toLowerCase().includes(searchValue)
+      item.phone.toLowerCase().includes(searchValue) ||
+      item.courses.some((course) => course.toLowerCase().includes(searchValue)) ||
+      item.qualification.toLowerCase().includes(searchValue) ||
+      item.remarks.toLowerCase().includes(searchValue)
+    )
+  }
     )
   })
 
