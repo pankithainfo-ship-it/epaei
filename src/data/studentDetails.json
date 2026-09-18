@@ -128,17 +128,5 @@
     "qualification": "B.Tech Computer Science",
     "phone": "+91 98765 43219",
     "remarks": "Outstanding performance"
-  },
-  {
-    "id": 11,
-    "date": "2026-09-17",
-    "name": "ankitha",
-    "courses": [
-      "Mathematics",
-      "Computer Science"
-    ],
-    "qualification": "degree",
-    "phone": "8977118018",
-    "remarks": "good"
   }
 ]

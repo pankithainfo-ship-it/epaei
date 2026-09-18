@@ -408,24 +408,26 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
                       <span style={styles.badge}>{s.remarks}</span>
                     </td>
                     <td style={styles.td}>
-                      <button
-                        type="button"
-                        style={styles.logoutButton}
-                        onClick={() => {
-                          setEditingStudent(s)
-                          setShowForm(true)
-                        }}
-                      >
-                        Update
-                      </button>
-                      <button
-                        type="button"
-                        style={{ ...styles.logoutButton, marginLeft: '8px', color: '#b42318' }}
-                        onClick={() => handleDelete(s.id)}
-                        disabled={deletingStudentId === s.id}
-                      >
-                        {deletingStudentId === s.id ? 'Deleting...' : 'Delete'}
-                      </button>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'nowrap' }}>
+                        <button
+                          type="button"
+                          style={styles.logoutButton}
+                          onClick={() => {
+                            setEditingStudent(s)
+                            setShowForm(true)
+                          }}
+                        >
+                          Update
+                        </button>
+                        <button
+                          type="button"
+                          style={{ ...styles.logoutButton, color: '#b42318' }}
+                          onClick={() => handleDelete(s.id)}
+                          disabled={deletingStudentId === s.id}
+                        >
+                          {deletingStudentId === s.id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
