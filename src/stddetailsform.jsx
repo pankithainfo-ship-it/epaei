@@ -69,10 +69,25 @@ const formStyles = {
   message: { color: '#1e8d61', fontSize: '14px', fontWeight: 600 },
 }
 
-const Stddetailsform = ({ onStudentAdded, onCancel }) => {
+const Stddetailsform = ({ editingStudent, onStudentAdded, onStudentUpdated, onCancel }) => {
   const [form, setForm] = React.useState(initialForm)
   const [message, setMessage] = React.useState('')
   const [isSaving, setIsSaving] = React.useState(false)
+
+  React.useEffect(() => {
+    if (editingStudent) {
+      setForm({
+        date: editingStudent.date,
+        name: editingStudent.name,
+        courses: editingStudent.courses,
+        qualification: editingStudent.qualification,
+        phone: editingStudent.phone,
+        remarks: editingStudent.remarks,
+      })
+    } else {
+      setForm(initialForm)
+    }
+  }, [editingStudent])
 
   const updateField = (event) => {
     const { name, value } = event.target
@@ -94,11 +109,14 @@ const Stddetailsform = ({ onStudentAdded, onCancel }) => {
     setIsSaving(true)
 
     try {
-      const response = await fetch('http://localhost:3001/api/students', {
-        method: 'POST',
+      const response = await fetch(
+        editingStudent ? `http://localhost:3001/api/students/${editingStudent.id}` : 'http://localhost:3001/api/students',
+        {
+        method: editingStudent ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-      })
+        }
+      )
       const result = await response.json()
 
       if (!response.ok) {
@@ -107,8 +125,12 @@ const Stddetailsform = ({ onStudentAdded, onCancel }) => {
       }
 
       setForm(initialForm)
-      setMessage('Student details saved successfully.')
-      onStudentAdded?.(result.student)
+      setMessage(editingStudent ? 'Student details updated successfully.' : 'Student details saved successfully.')
+      if (editingStudent) {
+        onStudentUpdated?.(result.student)
+      } else {
+        onStudentAdded?.(result.student)
+      }
     } catch {
       setMessage('Unable to connect to the student details service.')
     } finally {
@@ -118,7 +140,7 @@ const Stddetailsform = ({ onStudentAdded, onCancel }) => {
 
   return (
     <section style={formStyles.section} aria-labelledby="student-form-title">
-      <h2 id="student-form-title" style={formStyles.heading}>Add student details</h2>
+      <h2 id="student-form-title" style={formStyles.heading}>{editingStudent ? 'Update student details' : 'Add student details'}</h2>
       <form onSubmit={handleSubmit}>
         <div style={formStyles.grid}>
           <div style={formStyles.field}>
@@ -155,7 +177,7 @@ const Stddetailsform = ({ onStudentAdded, onCancel }) => {
         </div>
         <div style={formStyles.actions}>
           <button type="submit" style={formStyles.button} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save student details'}
+            {isSaving ? (editingStudent ? 'Updating...' : 'Saving...') : (editingStudent ? 'Update student details' : 'Save student details')}
           </button>
           <button
             type="button"
