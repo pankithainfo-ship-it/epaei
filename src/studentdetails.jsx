@@ -243,6 +243,7 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
   const [loadError, setLoadError] = React.useState('')
   const [showForm, setShowForm] = React.useState(false)
   const [editingStudent, setEditingStudent] = React.useState(null)
+  const [deletingStudentId, setDeletingStudentId] = React.useState(null)
   const [currentPage, setCurrentPage] = React.useState(1)
   const [searchTerm, setSearchTerm] = React.useState('')
   const rowsPerPage = 6
@@ -283,6 +284,31 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= (totalPages || 1)) {
       setCurrentPage(page)
+    }
+  }
+
+  const handleDelete = async (studentId) => {
+    if (!window.confirm('Delete this student record?')) return
+
+    setDeletingStudentId(studentId)
+    setLoadError('')
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/students/${studentId}`, {
+        method: 'DELETE',
+      })
+      const result = await response.json()
+
+      if (!response.ok) {
+        setLoadError(result.message || 'Unable to delete student details.')
+        return
+      }
+
+      setStudent((previous) => previous.filter((item) => item.id !== studentId))
+    } catch {
+      setLoadError('Unable to connect to the student details service.')
+    } finally {
+      setDeletingStudentId(null)
     }
   }
 
@@ -391,6 +417,14 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
                         }}
                       >
                         Update
+                      </button>
+                      <button
+                        type="button"
+                        style={{ ...styles.logoutButton, marginLeft: '8px', color: '#b42318' }}
+                        onClick={() => handleDelete(s.id)}
+                        disabled={deletingStudentId === s.id}
+                      >
+                        {deletingStudentId === s.id ? 'Deleting...' : 'Delete'}
                       </button>
                     </td>
                   </tr>

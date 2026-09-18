@@ -12,7 +12,7 @@ const sendJson = (res, statusCode, payload) => {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
+    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   })
   res.end(JSON.stringify(payload))
@@ -38,7 +38,7 @@ const writeStudents = (students) => {
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,OPTIONS')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
   if (req.method === 'OPTIONS') {
@@ -163,6 +163,25 @@ const server = http.createServer((req, res) => {
         sendJson(res, 500, { message: 'Unable to update student details', error: error.message })
       }
     })
+    return
+  }
+
+  if (studentUpdateMatch && req.method === 'DELETE') {
+    try {
+      const studentId = Number(studentUpdateMatch[1])
+      const students = readStudents()
+      const studentToDelete = students.find((student) => student.id === studentId)
+
+      if (!studentToDelete) {
+        sendJson(res, 404, { message: 'Student record not found.' })
+        return
+      }
+
+      writeStudents(students.filter((student) => student.id !== studentId))
+      sendJson(res, 200, { message: 'Student details deleted successfully.', student: studentToDelete })
+    } catch (error) {
+      sendJson(res, 500, { message: 'Unable to delete student details', error: error.message })
+    }
     return
   }
 
