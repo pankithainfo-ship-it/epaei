@@ -242,6 +242,7 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
   const [student, setStudent] = React.useState([])
   const [loadError, setLoadError] = React.useState('')
   const [showForm, setShowForm] = React.useState(false)
+  const [editingStudent, setEditingStudent] = React.useState(null)
   const [currentPage, setCurrentPage] = React.useState(1)
   const [searchTerm, setSearchTerm] = React.useState('')
   const rowsPerPage = 6
@@ -292,7 +293,10 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
           <div style={styles.headerRow}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
               <h1 style={styles.title}>Student Details</h1>
-              <button type="button" style={styles.addButton} onClick={() => setShowForm(true)}>
+              <button type="button" style={styles.addButton} onClick={() => {
+                setEditingStudent(null)
+                setShowForm(true)
+              }}>
                 Add new record
               </button>
             </div>
@@ -325,10 +329,20 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
 
         {showForm && (
           <StudentDetailsForm
-            onCancel={() => setShowForm(false)}
+            editingStudent={editingStudent}
+            onCancel={() => {
+              setEditingStudent(null)
+              setShowForm(false)
+            }}
             onStudentAdded={(newStudent) => {
               setStudent((previous) => [...previous, newStudent])
               setLoadError('')
+              setShowForm(false)
+            }}
+            onStudentUpdated={(updatedStudent) => {
+              setStudent((previous) => previous.map((item) => item.id === updatedStudent.id ? updatedStudent : item))
+              setLoadError('')
+              setEditingStudent(null)
               setShowForm(false)
             }}
           />
@@ -351,6 +365,7 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
                 <th style={styles.th}>Qualification</th>
                 <th style={styles.th}>Phone</th>
                 <th style={styles.th}>Remarks</th>
+                <th style={styles.th}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -366,11 +381,23 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
                     <td style={styles.td}>
                       <span style={styles.badge}>{s.remarks}</span>
                     </td>
+                    <td style={styles.td}>
+                      <button
+                        type="button"
+                        style={styles.logoutButton}
+                        onClick={() => {
+                          setEditingStudent(s)
+                          setShowForm(true)
+                        }}
+                      >
+                        Update
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" style={{ ...styles.td, textAlign: 'center', color: '#5d6470' }}>
+                  <td colSpan="8" style={{ ...styles.td, textAlign: 'center', color: '#5d6470' }}>
                     No student records found.
                   </td>
                 </tr>
