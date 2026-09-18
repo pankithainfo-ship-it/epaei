@@ -140,19 +140,5 @@
     "qualification": "degree",
     "phone": "8977118018",
     "remarks": "good"
-  },
-  {
-    "id": 12,
-    "date": "2026-09-17",
-    "name": "madhavi",
-    "courses": [
-      "Mathematics",
-      "Physics",
-      "Chemistry",
-      "Computer Science"
-    ],
-    "qualification": "b.com computers",
-    "phone": "8885132827",
-    "remarks": "excellent"
   }
 ]
