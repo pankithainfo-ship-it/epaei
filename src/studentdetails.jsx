@@ -1,5 +1,6 @@
 import React from 'react'
 import StudentDetailsForm from './stddetailsform.jsx'
+import Dashboard from './data/dashboard.jsx'
 
 const _legacyStudentData = [
   {
@@ -184,6 +185,15 @@ const styles = {
     fontWeight: 700,
     cursor: 'pointer',
   },
+  analyseButton: {
+    padding: '11px 16px',
+    border: 0,
+    borderRadius: '10px',
+    background: '#2457d6',
+    color: '#fff',
+    fontWeight: 700,
+    cursor: 'pointer',
+  },
   searchBox: {
     width: '320px',
     maxWidth: '100%',
@@ -246,6 +256,7 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
   const [deletingStudentId, setDeletingStudentId] = React.useState(null)
   const [currentPage, setCurrentPage] = React.useState(1)
   const [searchTerm, setSearchTerm] = React.useState('')
+  const [showDashboard, setShowDashboard] = React.useState(false)
   const rowsPerPage = 6
 
   React.useEffect(() => {
@@ -329,6 +340,9 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <button type="button" style={styles.analyseButton} onClick={() => setShowDashboard(true)}>
+                Analyse
+              </button>
               <div style={styles.userInfo}>
                 <span style={styles.userBadge}>{user.charAt(0).toUpperCase()}</span>
                 <div style={styles.userText}>
@@ -489,6 +503,20 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
           </div>
         </div>
       </div>
+
+      {showDashboard && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="dashboard-modal-title">
+          <div className="dashboard-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="dashboard-modal-title">Enrollment analysis</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowDashboard(false)}>
+                Close
+              </button>
+            </div>
+            <Dashboard user={user} onLogout={onLogout} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
