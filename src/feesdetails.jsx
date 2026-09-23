@@ -1,7 +1,9 @@
 import React from 'react'
 
 const initialForm = {
+	admissionNumber: '',
 	studentId: '',
+	course: '',
 	amount: '',
 	due: '',
 	paymentDate: '',
@@ -25,9 +27,22 @@ const formStyles = {
 const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdded, onCancel, onClose }) => {
 	const [form, setForm] = React.useState(initialForm)
 	const [payments, setPayments] = React.useState([])
+	const [admissions, setAdmissions] = React.useState([])
+	const [paymentSearch, setPaymentSearch] = React.useState('')
+	const [paymentDate, setPaymentDate] = React.useState('')
 	const [message, setMessage] = React.useState('')
 	const [messageType, setMessageType] = React.useState('success')
 	const [isSaving, setIsSaving] = React.useState(false)
+
+	React.useEffect(() => {
+		fetch('http://localhost:3001/api/admissions')
+			.then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load admissions.')))
+			.then(setAdmissions)
+			.catch((error) => {
+				setMessageType('error')
+				setMessage(error.message || 'Unable to load admissions.')
+			})
+	}, [])
 
 	React.useEffect(() => {
 		if (!adminView) return
@@ -42,6 +57,13 @@ const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdde
 				setMessage(error.message || 'Unable to load payment details.')
 			})
 	}, [adminView])
+
+	const filteredPayments = payments.filter((payment) => {
+		const searchValue = paymentSearch.trim().toLowerCase()
+		const matchesSearch = !searchValue || [payment.admissionNumber, payment.studentName, payment.course]
+			.some((value) => String(value || '').toLowerCase().includes(searchValue))
+		return matchesSearch && (!paymentDate || payment.paymentDate === paymentDate)
+	})
 
 	const updateField = (event) => {
 		const { name, value } = event.target
@@ -87,20 +109,28 @@ const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdde
 						<h2 id="payment-details-title">Student payment details</h2>
 						<button type="button" className="dashboard-modal-close" onClick={onClose}>Close</button>
 					</div>
-					<div style={{ padding: '24px', overflowX: 'auto' }}>
+					<div style={{ padding: '24px' }}>
 						{message && <p role="alert" style={{ color: '#b42318', fontWeight: 600 }}>{message}</p>}
-						<table style={{ width: '100%', minWidth: '980px', borderCollapse: 'collapse', background: '#fff' }}>
+						<div className="payment-search-toolbar">
+							<input type="search" value={paymentSearch} onChange={(event) => setPaymentSearch(event.target.value)} placeholder="Search admission no., name, or course" aria-label="Search payments by admission number, name, or course" />
+							<input type="date" value={paymentDate} onChange={(event) => setPaymentDate(event.target.value)} aria-label="Filter payments by date" />
+							{(paymentSearch || paymentDate) && <button type="button" onClick={() => { setPaymentSearch(''); setPaymentDate('') }}>Clear filters</button>}
+						</div>
+						<div style={{ overflowX: 'auto' }}>
+						<table style={{ width: '100%', minWidth: '1180px', borderCollapse: 'collapse', background: '#fff' }}>
 							<thead>
 								<tr>
-									{['Student', 'Amount', 'Due', 'Payment date', 'Due payment date', 'Method', 'Status', 'Submitted by', 'Remarks'].map((heading) => (
+					{['Admission no.', 'Student', 'Course', 'Amount', 'Due', 'Payment date', 'Due payment date', 'Method', 'Status', 'Submitted by', 'Remarks'].map((heading) => (
 										<th key={heading} style={{ padding: '14px', textAlign: 'left', background: '#f5f0e8', color: '#5d6470', fontSize: '12px' }}>{heading}</th>
 									))}
 								</tr>
 							</thead>
 							<tbody>
-								{payments.length ? payments.map((payment) => (
+								{filteredPayments.length ? filteredPayments.map((payment) => (
 									<tr key={payment.id}>
+										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>{payment.admissionNumber || '-'}</td>
 										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>{payment.studentName}</td>
+										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>{payment.course || '-'}</td>
 										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>₹{Number(payment.amount).toLocaleString('en-IN')}</td>
 										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>{payment.due === undefined ? '-' : `₹${Number(payment.due).toLocaleString('en-IN')}`}</td>
 										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>{payment.paymentDate}</td>
@@ -111,10 +141,11 @@ const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdde
 										<td style={{ padding: '14px', borderBottom: '1px solid #eee' }}>{payment.remarks || '-'}</td>
 									</tr>
 								)) : (
-									<tr><td colSpan="9" style={{ padding: '24px', textAlign: 'center' }}>No payment details found.</td></tr>
+									<tr><td colSpan="11" style={{ padding: '24px', textAlign: 'center' }}>No payment details found.</td></tr>
 								)}
 							</tbody>
 						</table>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -127,12 +158,20 @@ const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdde
 			<form onSubmit={handleSubmit}>
 				<div style={formStyles.grid}>
 					<div style={formStyles.field}>
-						<label htmlFor="payment-student" style={formStyles.label}>Student</label>
-						<select id="payment-student" name="studentId" value={form.studentId} onChange={updateField} style={formStyles.input} required>
-							<option value="">Select a student</option>
+						<label htmlFor="payment-admission" style={formStyles.label}>Admission number</label>
+						<select id="payment-admission" name="admissionNumber" value={form.admissionNumber} onChange={(event) => setForm((previous) => ({ ...previous, admissionNumber: event.target.value, studentId: '', course: admissions.find((item) => item.admissionNumber === event.target.value)?.course || '' }))} style={formStyles.input} required={!form.studentId}>
+							<option value="">Select an admission</option>
+							{admissions.map((admission) => <option key={admission.id} value={admission.admissionNumber}>{admission.admissionNumber} - {admission.name}</option>)}
+						</select>
+					</div>
+					<div style={formStyles.field}>
+						<label htmlFor="payment-student" style={formStyles.label}>Legacy student record</label>
+						<select id="payment-student" name="studentId" value={form.studentId} onChange={(event) => setForm((previous) => ({ ...previous, studentId: event.target.value, admissionNumber: '', course: students.find((item) => item.id === Number(event.target.value))?.courses?.join(', ') || '' }))} style={formStyles.input} required={!form.admissionNumber}>
+							<option value="">Select an existing student</option>
 							{students.map((student) => <option key={student.id} value={student.id}>{student.name} (#{student.id})</option>)}
 						</select>
 					</div>
+					<div style={formStyles.field}><label htmlFor="payment-course" style={formStyles.label}>Course</label><input id="payment-course" name="course" value={form.course} onChange={updateField} style={formStyles.input} placeholder="Course" readOnly={Boolean(form.admissionNumber || form.studentId)} /></div>
 					<div style={formStyles.field}><label htmlFor="payment-amount" style={formStyles.label}>Amount</label><input id="payment-amount" name="amount" type="number" min="1" step="0.01" value={form.amount} onChange={updateField} style={formStyles.input} placeholder="25000" required /></div>
 					<div style={formStyles.field}><label htmlFor="payment-due" style={formStyles.label}>Due amount</label><input id="payment-due" name="due" type="number" min="0" step="0.01" value={form.due} onChange={updateField} style={formStyles.input} placeholder="5000" required /></div>
 					<div style={formStyles.field}><label htmlFor="payment-date" style={formStyles.label}>Payment date</label><input id="payment-date" name="paymentDate" type="date" value={form.paymentDate} onChange={updateField} style={formStyles.input} required /></div>

@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename)
 const authFilePath = path.join(__dirname, 'src', 'data', 'authUsers.json')
 const studentFilePath = path.join(__dirname, 'src', 'data', 'studentDetails.json')
 const paymentFilePath = path.join(__dirname, 'src', 'data', 'studentPayments.json')
+const admissionFilePath = path.join(__dirname, 'src', 'data', 'admissions.json')
 
 const sendJson = (res, statusCode, payload) => {
   res.writeHead(statusCode, {
@@ -44,6 +45,15 @@ const readPayments = () => {
 
 const writePayments = (payments) => {
   fs.writeFileSync(paymentFilePath, `${JSON.stringify(payments, null, 2)}\n`)
+}
+
+const readAdmissions = () => {
+  const raw = fs.readFileSync(admissionFilePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+const writeAdmissions = (admissions) => {
+  fs.writeFileSync(admissionFilePath, `${JSON.stringify(admissions, null, 2)}\n`)
 }
 
 const server = http.createServer((req, res) => {
@@ -122,6 +132,71 @@ const server = http.createServer((req, res) => {
     return
   }
 
+  if (req.url === '/api/admissions' && req.method === 'GET') {
+    try {
+      sendJson(res, 200, readAdmissions())
+    } catch (error) {
+      sendJson(res, 500, { message: 'Unable to load admission details', error: error.message })
+    }
+    return
+  }
+
+  if (req.url === '/api/admissions' && req.method === 'POST') {
+    let body = ''
+
+    req.on('data', (chunk) => {
+      body += chunk.toString()
+    })
+
+    req.on('end', () => {
+      try {
+        const incomingAdmission = JSON.parse(body || '{}')
+        const requiredFields = ['admissionNumber', 'joiningDate', 'name', 'fatherName', 'course', 'phone', 'address', 'qualification']
+
+        if (requiredFields.some((field) => !String(incomingAdmission[field] || '').trim())) {
+          sendJson(res, 400, { message: 'Please complete all required admission fields.' })
+          return
+        }
+
+        const admissions = readAdmissions()
+        const admissionNumber = incomingAdmission.admissionNumber.trim()
+        const admissionExists = admissions.some(
+          (admission) => admission.admissionNumber.toLowerCase() === admissionNumber.toLowerCase()
+        )
+
+        if (admissionExists) {
+          sendJson(res, 409, { message: 'Admission number already exists.' })
+          return
+        }
+
+        const newAdmission = {
+          id: admissions.reduce((highestId, admission) => Math.max(highestId, admission.id), 0) + 1,
+          admissionNumber,
+          joiningDate: incomingAdmission.joiningDate,
+          name: incomingAdmission.name.trim(),
+          fatherName: incomingAdmission.fatherName.trim(),
+          course: incomingAdmission.course.trim(),
+          phone: incomingAdmission.phone.trim(),
+          address: incomingAdmission.address.trim(),
+          qualification: incomingAdmission.qualification.trim(),
+          email: String(incomingAdmission.email || '').trim(),
+          gender: String(incomingAdmission.gender || '').trim(),
+          dateOfBirth: String(incomingAdmission.dateOfBirth || '').trim(),
+          emergencyContact: String(incomingAdmission.emergencyContact || '').trim(),
+          previousInstitution: String(incomingAdmission.previousInstitution || '').trim(),
+          remarks: String(incomingAdmission.remarks || '').trim(),
+          status: String(incomingAdmission.status || 'Active').trim(),
+        }
+
+        writeAdmissions([...admissions, newAdmission])
+        sendJson(res, 201, { message: 'Admission saved successfully.', admission: newAdmission })
+      } catch (error) {
+        sendJson(res, 500, { message: 'Unable to save admission details', error: error.message })
+      }
+    })
+    return
+  }
+
   if (req.url === '/api/payments' && req.method === 'GET') {
     if (req.headers['x-user-role'] !== 'admin') {
       sendJson(res, 403, { message: 'Only admins can view payment details.' })
@@ -129,7 +204,19 @@ const server = http.createServer((req, res) => {
     }
 
     try {
-      sendJson(res, 200, readPayments())
+      const students = readStudents()
+      const admissions = readAdmissions()
+      const payments = readPayments().map((payment) => {
+        const student = students.find((item) => item.id === payment.studentId)
+        const admission = admissions.find((item) => item.admissionNumber === payment.admissionNumber)
+        return {
+          ...payment,
+          admissionNumber: payment.admissionNumber || admission?.admissionNumber || '',
+          studentName: payment.studentName || admission?.name || student?.name || '',
+          course: payment.course || admission?.course || student?.courses?.join(', ') || '',
+        }
+      })
+      sendJson(res, 200, payments)
     } catch (error) {
       sendJson(res, 500, { message: 'Unable to load payment details', error: error.message })
     }
@@ -146,20 +233,26 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const incomingPayment = JSON.parse(body || '{}')
-        const requiredFields = ['studentId', 'amount', 'due', 'paymentDate', 'duePaymentDate', 'paymentMethod', 'status']
+        const requiredFields = ['amount', 'due', 'paymentDate', 'duePaymentDate', 'paymentMethod', 'status']
 
-        if (requiredFields.some((field) => !String(incomingPayment[field] || '').trim())) {
+        if (requiredFields.some((field) => !String(incomingPayment[field] || '').trim()) || (!incomingPayment.studentId && !String(incomingPayment.admissionNumber || '').trim())) {
           sendJson(res, 400, { message: 'Please complete all payment details.' })
           return
         }
 
         const students = readStudents()
-        const student = students.find((item) => item.id === Number(incomingPayment.studentId))
+        const admissions = readAdmissions()
+        const student = incomingPayment.studentId
+          ? students.find((item) => item.id === Number(incomingPayment.studentId))
+          : null
+        const admission = String(incomingPayment.admissionNumber || '').trim()
+          ? admissions.find((item) => item.admissionNumber.toLowerCase() === incomingPayment.admissionNumber.trim().toLowerCase())
+          : null
         const amount = Number(incomingPayment.amount)
         const due = Number(incomingPayment.due)
 
-        if (!student) {
-          sendJson(res, 400, { message: 'Select a valid student.' })
+        if (!student && !admission) {
+          sendJson(res, 400, { message: 'Select a valid student or admission.' })
           return
         }
 
@@ -176,8 +269,10 @@ const server = http.createServer((req, res) => {
         const payments = readPayments()
         const newPayment = {
           id: payments.reduce((highestId, payment) => Math.max(highestId, payment.id), 0) + 1,
-          studentId: student.id,
-          studentName: student.name,
+          studentId: student?.id || null,
+          admissionNumber: admission?.admissionNumber || String(incomingPayment.admissionNumber || '').trim(),
+          studentName: admission?.name || student?.name,
+          course: admission?.course || String(incomingPayment.course || '').trim(),
           amount,
           due,
           paymentDate: incomingPayment.paymentDate,
