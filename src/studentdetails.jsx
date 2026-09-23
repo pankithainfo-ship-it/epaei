@@ -2,6 +2,7 @@ import React from 'react'
 import StudentDetailsForm from './stddetailsform.jsx'
 import Dashboard from './data/dashboard.jsx'
 import FeesDetails from './feesdetails.jsx'
+import AdmissionDetails from './admissiondetails.jsx'
 
 const _legacyStudentData = [
   {
@@ -260,6 +261,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
   const [showDashboard, setShowDashboard] = React.useState(false)
   const [showPaymentForm, setShowPaymentForm] = React.useState(false)
   const [showPayments, setShowPayments] = React.useState(false)
+  const [showAdmissions, setShowAdmissions] = React.useState(false)
   const rowsPerPage = 6
   const isAdmin = user.role === 'admin'
 
@@ -334,7 +336,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
         <div style={styles.header}>
           <div style={styles.headerRow}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-              <h1 style={styles.title}>Student Details</h1>
+              <h1 style={styles.title}>Equiry Details</h1>
               <button type="button" style={styles.addButton} onClick={() => {
                 setEditingStudent(null)
                 setShowForm(true)
@@ -347,8 +349,17 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
               <button type="button" style={styles.analyseButton} onClick={() => setShowDashboard(true)}>
                 Analyse
               </button>
-              <button type="button" style={styles.analyseButton} onClick={() => setShowPaymentForm((visible) => !visible)}>
-                {showPaymentForm ? 'Hide payment form' : 'Record payment'}
+              <button type="button" style={styles.analyseButton} onClick={() => {
+                setShowPaymentForm((visible) => !visible)
+                setShowAdmissions(false)
+              }}>
+                Record payment
+              </button>
+              <button type="button" style={{ ...styles.analyseButton, background: '#b56736' }} onClick={() => {
+                setShowAdmissions((visible) => !visible)
+                setShowPaymentForm(false)
+              }}>
+                Admission details
               </button>
               {isAdmin && (
                 <button type="button" style={{ ...styles.analyseButton, background: '#1e8d61' }} onClick={() => setShowPayments(true)}>
@@ -398,14 +409,6 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
               setEditingStudent(null)
               setShowForm(false)
             }}
-          />
-        )}
-
-        {showPaymentForm && (
-          <FeesDetails
-            username={user.username}
-            students={student}
-            onCancel={() => setShowPaymentForm(false)}
           />
         )}
 
@@ -523,6 +526,38 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
           </div>
         </div>
       </div>
+
+      {showPaymentForm && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="record-payment-title">
+          <div className="dashboard-modal-panel compact-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="record-payment-title">Record student payment</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowPaymentForm(false)}>
+                Close
+              </button>
+            </div>
+            <FeesDetails
+              username={user.username}
+              students={student}
+              onCancel={() => setShowPaymentForm(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {showAdmissions && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="admission-details-popup-title">
+          <div className="dashboard-modal-panel admission-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="admission-details-popup-title">Admission details</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowAdmissions(false)}>
+                Close
+              </button>
+            </div>
+            <AdmissionDetails />
+          </div>
+        </div>
+      )}
 
       {showDashboard && (
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="dashboard-modal-title">
