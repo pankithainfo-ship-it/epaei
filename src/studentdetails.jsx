@@ -287,7 +287,9 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
       item.phone.toLowerCase().includes(searchValue) ||
       item.courses.some((course) => course.toLowerCase().includes(searchValue))
     )
-  })
+  } 
+    )
+  }
 
   const totalPages = Math.ceil(filteredStudents.length / rowsPerPage)
   const safePage = Math.min(currentPage, totalPages || 1)
