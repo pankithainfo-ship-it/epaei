@@ -35,7 +35,7 @@ const LoginForm = ({ onLoginSuccess }) => {
 
       if (user) {
         setMessage('Login successful. Redirecting...')
-        onLoginSuccess?.(user.username)
+        onLoginSuccess?.(user)
         return
       }
 
