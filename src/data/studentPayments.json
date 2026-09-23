@@ -1,0 +1,63 @@
+[
+  {
+    "id": 1,
+    "studentId": 1,
+    "studentName": "Aarav Sharma",
+    "amount": 10000,
+    "paymentDate": "2026-09-22",
+    "paymentMethod": "Cash",
+    "status": "Paid",
+    "remarks": "",
+    "submittedBy": "admin"
+  },
+  {
+    "id": 2,
+    "studentId": 3,
+    "studentName": "Ananya Verma",
+    "amount": 10000,
+    "paymentDate": "2026-09-22",
+    "paymentMethod": "UPI",
+    "status": "Paid",
+    "remarks": "good",
+    "submittedBy": "admin"
+  },
+  {
+    "id": 3,
+    "studentId": 4,
+    "studentName": "Rohan Mehta",
+    "amount": 40000,
+    "due": 5000,
+    "paymentDate": "2026-09-22",
+    "duePaymentDate": "2026-10-08",
+    "paymentMethod": "UPI",
+    "status": "Partially paid",
+    "remarks": "",
+    "submittedBy": "admin"
+  },
+  {
+    "id": 4,
+    "studentId": 5,
+    "studentName": "Saanvi Kapoor",
+    "amount": 20000,
+    "due": 5000,
+    "paymentDate": "2026-09-22",
+    "duePaymentDate": "2026-10-04",
+    "paymentMethod": "Card",
+    "status": "Partially paid",
+    "remarks": "",
+    "submittedBy": "ankitha-dev1"
+  },
+  {
+    "id": 5,
+    "studentId": 8,
+    "studentName": "Arjun Desai",
+    "amount": 10000,
+    "due": 3000,
+    "paymentDate": "2026-09-22",
+    "duePaymentDate": "2026-10-01",
+    "paymentMethod": "Cash",
+    "status": "Paid",
+    "remarks": "",
+    "submittedBy": "admin"
+  }
+]

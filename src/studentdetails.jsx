@@ -1,6 +1,7 @@
 import React from 'react'
 import StudentDetailsForm from './stddetailsform.jsx'
 import Dashboard from './data/dashboard.jsx'
+import FeesDetails from './feesdetails.jsx'
 
 const _legacyStudentData = [
   {
@@ -248,7 +249,7 @@ const styles = {
   },
 }
 
-const StudentDetails = ({ user = 'Student', onLogout }) => {
+const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLogout }) => {
   const [student, setStudent] = React.useState([])
   const [loadError, setLoadError] = React.useState('')
   const [showForm, setShowForm] = React.useState(false)
@@ -257,7 +258,10 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
   const [currentPage, setCurrentPage] = React.useState(1)
   const [searchTerm, setSearchTerm] = React.useState('')
   const [showDashboard, setShowDashboard] = React.useState(false)
+  const [showPaymentForm, setShowPaymentForm] = React.useState(false)
+  const [showPayments, setShowPayments] = React.useState(false)
   const rowsPerPage = 6
+  const isAdmin = user.role === 'admin'
 
   React.useEffect(() => {
     fetch('http://localhost:3001/api/students')
@@ -342,11 +346,19 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
               <button type="button" style={styles.analyseButton} onClick={() => setShowDashboard(true)}>
                 Analyse
               </button>
+              <button type="button" style={styles.analyseButton} onClick={() => setShowPaymentForm((visible) => !visible)}>
+                {showPaymentForm ? 'Hide payment form' : 'Record payment'}
+              </button>
+              {isAdmin && (
+                <button type="button" style={{ ...styles.analyseButton, background: '#1e8d61' }} onClick={() => setShowPayments(true)}>
+                  Payment details
+                </button>
+              )}
               <div style={styles.userInfo}>
-                <span style={styles.userBadge}>{user.charAt(0).toUpperCase()}</span>
+                <span style={styles.userBadge}>{user.username.charAt(0).toUpperCase()}</span>
                 <div style={styles.userText}>
                   <span style={styles.userLabel}>Logged in</span>
-                  <span style={styles.userName}>{user}</span>
+                  <span style={styles.userName}>{user.username}</span>
                 </div>
               </div>
 
@@ -385,6 +397,14 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
               setEditingStudent(null)
               setShowForm(false)
             }}
+          />
+        )}
+
+        {showPaymentForm && (
+          <FeesDetails
+            username={user.username}
+            students={student}
+            onCancel={() => setShowPaymentForm(false)}
           />
         )}
 
@@ -512,9 +532,18 @@ const StudentDetails = ({ user = 'Student', onLogout }) => {
                 Close
               </button>
             </div>
-            <Dashboard user={user} onLogout={onLogout} />
+            <Dashboard user={user.username} onLogout={onLogout} />
           </div>
         </div>
+      )}
+
+      {showPayments && isAdmin && (
+        <FeesDetails
+          adminView
+          username={user.username}
+          students={student}
+          onClose={() => setShowPayments(false)}
+        />
       )}
     </div>
   )

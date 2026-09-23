@@ -5,7 +5,7 @@ import './App.css'
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [loggedInUser, setLoggedInUser] = useState('')
+  const [loggedInUser, setLoggedInUser] = useState(null)
 
   return (
     <div>
@@ -14,13 +14,13 @@ const App = () => {
           user={loggedInUser}
           onLogout={() => {
             setIsAuthenticated(false)
-            setLoggedInUser('')
+            setLoggedInUser(null)
           }}
         />
       ) : (
         <LoginForm
-          onLoginSuccess={(username) => {
-            setLoggedInUser(username)
+          onLoginSuccess={(user) => {
+            setLoggedInUser(user)
             setIsAuthenticated(true)
           }}
         />
