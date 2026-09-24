@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "batchNumber": "uiux-sep-01",
+    "courseName": "UI UX Design",
+    "startingDate": "2026-09-24",
+    "endingDate": "2026-12-24",
+    "remarks": "@7pm",
+    "zoomLink": "https://www.jeevanit.com",
+    "googleClassroomLink": "https://www.jeevanit.com",
+    "classType": "Batch"
+  },
+  {
+    "id": 2,
+    "batchNumber": "AIML-01",
+    "courseName": "AIMLONLINE",
+    "startingDate": "2026-09-30",
+    "endingDate": "2026-11-24",
+    "remarks": "FACULTY JEEVAN",
+    "zoomLink": "https://www.jeevanit.com",
+    "googleClassroomLink": "https://www.jeevanit.com",
+    "classType": "Upcoming batch"
+  }
+]
