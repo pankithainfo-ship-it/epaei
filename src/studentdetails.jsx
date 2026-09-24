@@ -1,6 +1,6 @@
 import React from 'react'
 import StudentDetailsForm from './stddetailsform.jsx'
-import Dashboard from './data/dashboard.jsx'
+import Dashboard, { EnrollmentDashboard } from './data/dashboard.jsx'
 import FeesDetails from './feesdetails.jsx'
 import AdmissionDetails from './admissiondetails.jsx'
 
@@ -259,6 +259,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
   const [currentPage, setCurrentPage] = React.useState(1)
   const [searchTerm, setSearchTerm] = React.useState('')
   const [showDashboard, setShowDashboard] = React.useState(false)
+  const [showEnrollmentDashboard, setShowEnrollmentDashboard] = React.useState(false)
   const [showPaymentForm, setShowPaymentForm] = React.useState(false)
   const [showPayments, setShowPayments] = React.useState(false)
   const [showAdmissions, setShowAdmissions] = React.useState(false)
@@ -333,6 +334,18 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
 
   return (
     <div style={styles.page}>
+      <div className="student-page-topbar">
+        <div style={styles.userInfo}>
+          <span style={styles.userBadge}>{user.username.charAt(0).toUpperCase()}</span>
+          <div style={styles.userText}>
+            <span style={styles.userLabel}>Logged in</span>
+            <span style={styles.userName}>{user.username}</span>
+          </div>
+        </div>
+        <button type="button" style={styles.logoutButton} onClick={onLogout}>
+          Logout
+        </button>
+      </div>
       <div style={styles.wrapper}>
         <div style={styles.header}>
           <div style={styles.headerRow}>
@@ -342,19 +355,22 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
                 setEditingStudent(null)
                 setShowForm(true)
               }}>
-                Add new record
+                Add new enquiry
               </button>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <button type="button" style={styles.analyseButton} onClick={() => setShowDashboard(true)}>
-                Analyse
+                Admissions & payments dashboard
+              </button>
+              <button type="button" style={{ ...styles.analyseButton, background: '#53637b' }} onClick={() => setShowEnrollmentDashboard(true)}>
+                Enrollment analysis
               </button>
               <button type="button" style={styles.analyseButton} onClick={() => {
                 setShowPaymentForm((visible) => !visible)
                 setShowAdmissions(false)
               }}>
-                Record payment
+              Make Payment
               </button>
               <button type="button" style={{ ...styles.analyseButton, background: '#b56736' }} onClick={() => {
                 setShowAdmissions((visible) => !visible)
@@ -367,17 +383,6 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
                   Payment details
                 </button>
               )}
-              <div style={styles.userInfo}>
-                <span style={styles.userBadge}>{user.username.charAt(0).toUpperCase()}</span>
-                <div style={styles.userText}>
-                  <span style={styles.userLabel}>Logged in</span>
-                  <span style={styles.userName}>{user.username}</span>
-                </div>
-              </div>
-
-              <button type="button" style={styles.logoutButton} onClick={onLogout}>
-                Logout
-              </button>
             </div>
           </div>
 
@@ -391,27 +396,6 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
             />
           </div>
         </div>
-
-        {showForm && (
-          <StudentDetailsForm
-            editingStudent={editingStudent}
-            onCancel={() => {
-              setEditingStudent(null)
-              setShowForm(false)
-            }}
-            onStudentAdded={(newStudent) => {
-              setStudent((previous) => [...previous, newStudent])
-              setLoadError('')
-              setShowForm(false)
-            }}
-            onStudentUpdated={(updatedStudent) => {
-              setStudent((previous) => previous.map((item) => item.id === updatedStudent.id ? updatedStudent : item))
-              setLoadError('')
-              setEditingStudent(null)
-              setShowForm(false)
-            }}
-          />
-        )}
 
         {loadError && (
           <p role="alert" style={{ margin: '16px 22px 0', color: '#b42318', fontWeight: 600 }}>
@@ -528,6 +512,40 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
         </div>
       </div>
 
+      {showForm && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="student-form-modal-title">
+          <div className="dashboard-modal-panel compact-modal-panel enquiry-form-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="student-form-modal-title">{editingStudent ? 'Update student enquiry' : 'New student enquiry'}</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => {
+                setEditingStudent(null)
+                setShowForm(false)
+              }}>
+                Close
+              </button>
+            </div>
+            <StudentDetailsForm
+              editingStudent={editingStudent}
+              onCancel={() => {
+                setEditingStudent(null)
+                setShowForm(false)
+              }}
+              onStudentAdded={(newStudent) => {
+                setStudent((previous) => [...previous, newStudent])
+                setLoadError('')
+                setShowForm(false)
+              }}
+              onStudentUpdated={(updatedStudent) => {
+                setStudent((previous) => previous.map((item) => item.id === updatedStudent.id ? updatedStudent : item))
+                setLoadError('')
+                setEditingStudent(null)
+                setShowForm(false)
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       {showPaymentForm && (
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="record-payment-title">
           <div className="dashboard-modal-panel compact-modal-panel">
@@ -564,12 +582,24 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
         <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="dashboard-modal-title">
           <div className="dashboard-modal-panel">
             <div className="dashboard-modal-toolbar">
-              <h2 id="dashboard-modal-title">Enrollment analysis</h2>
+              <h2 id="dashboard-modal-title">Admissions and payments dashboard</h2>
               <button type="button" className="dashboard-modal-close" onClick={() => setShowDashboard(false)}>
                 Close
               </button>
             </div>
-            <Dashboard user={user.username} onLogout={onLogout} />
+            <Dashboard user={user.username} role={user.role} onLogout={onLogout} />
+          </div>
+        </div>
+      )}
+
+      {showEnrollmentDashboard && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="enrollment-dashboard-modal-title">
+          <div className="dashboard-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="enrollment-dashboard-modal-title">Enrollment analysis</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowEnrollmentDashboard(false)}>Close</button>
+            </div>
+            <EnrollmentDashboard user={user.username} onLogout={onLogout} />
           </div>
         </div>
       )}
