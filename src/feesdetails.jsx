@@ -24,7 +24,7 @@ const formStyles = {
 	button: { padding: '11px 16px', border: 0, borderRadius: '10px', background: '#23303b', color: '#fff', fontWeight: 700, cursor: 'pointer' },
 }
 
-const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdded, onCancel, onClose }) => {
+const FeesDetails = ({ adminView = false, username, onPaymentAdded, onCancel, onClose }) => {
 	const [form, setForm] = React.useState(initialForm)
 	const [payments, setPayments] = React.useState([])
 	const [admissions, setAdmissions] = React.useState([])
@@ -51,12 +51,15 @@ const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdde
 			.then((response) => response.ok
 				? response.json()
 				: response.json().then((result) => Promise.reject(new Error(result.message))))
-			.then(setPayments)
+					.then((records) => {
+						const admissionNumbers = new Set(admissions.map((admission) => admission.admissionNumber))
+						setPayments(records.filter((payment) => admissionNumbers.has(payment.admissionNumber)))
+					})
 			.catch((error) => {
 				setMessageType('error')
 				setMessage(error.message || 'Unable to load payment details.')
 			})
-	}, [adminView])
+	}, [adminView, admissions])
 
 	const filteredPayments = payments.filter((payment) => {
 		const searchValue = paymentSearch.trim().toLowerCase()
@@ -162,13 +165,6 @@ const FeesDetails = ({ adminView = false, students = [], username, onPaymentAdde
 						<select id="payment-admission" name="admissionNumber" value={form.admissionNumber} onChange={(event) => setForm((previous) => ({ ...previous, admissionNumber: event.target.value, studentId: '', course: admissions.find((item) => item.admissionNumber === event.target.value)?.course || '' }))} style={formStyles.input} required={!form.studentId}>
 							<option value="">Select an admission</option>
 							{admissions.map((admission) => <option key={admission.id} value={admission.admissionNumber}>{admission.admissionNumber} - {admission.name}</option>)}
-						</select>
-					</div>
-					<div style={formStyles.field}>
-						<label htmlFor="payment-student" style={formStyles.label}>Legacy student record</label>
-						<select id="payment-student" name="studentId" value={form.studentId} onChange={(event) => setForm((previous) => ({ ...previous, studentId: event.target.value, admissionNumber: '', course: students.find((item) => item.id === Number(event.target.value))?.courses?.join(', ') || '' }))} style={formStyles.input} required={!form.admissionNumber}>
-							<option value="">Select an existing student</option>
-							{students.map((student) => <option key={student.id} value={student.id}>{student.name} (#{student.id})</option>)}
 						</select>
 					</div>
 					<div style={formStyles.field}><label htmlFor="payment-course" style={formStyles.label}>Course</label><input id="payment-course" name="course" value={form.course} onChange={updateField} style={formStyles.input} placeholder="Course" readOnly={Boolean(form.admissionNumber || form.studentId)} /></div>

@@ -34,5 +34,41 @@
     "previousInstitution": "aiit institute",
     "remarks": "",
     "status": "Active"
+  },
+  {
+    "id": 3,
+    "admissionNumber": "sep-20262401",
+    "joiningDate": "2026-09-24",
+    "name": "prem",
+    "fatherName": "prem",
+    "course": "AI",
+    "phone": "+91 98765 43211",
+    "address": "dilsuknagar",
+    "qualification": "B.Tech Computer Science",
+    "email": "pankithainfo@gmail.com",
+    "gender": "Male",
+    "dateOfBirth": "2000-01-01",
+    "emergencyContact": "8885132827",
+    "previousInstitution": "aiit institute",
+    "remarks": "",
+    "status": "Active"
+  },
+  {
+    "id": 4,
+    "admissionNumber": "sep-20262402",
+    "joiningDate": "2026-09-24",
+    "name": "naveen",
+    "fatherName": "narsing rao",
+    "course": "sap",
+    "phone": "8885132827",
+    "address": "hyd",
+    "qualification": "b.com computers",
+    "email": "pankithainfo@gmail.com",
+    "gender": "",
+    "dateOfBirth": "1995-07-07",
+    "emergencyContact": "",
+    "previousInstitution": "",
+    "remarks": "",
+    "status": "Active"
   }
 ]

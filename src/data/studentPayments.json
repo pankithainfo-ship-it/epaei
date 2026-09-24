@@ -59,5 +59,35 @@
     "status": "Paid",
     "remarks": "",
     "submittedBy": "admin"
+  },
+  {
+    "id": 6,
+    "studentId": 11,
+    "admissionNumber": "",
+    "studentName": "prem",
+    "course": "Computer Science",
+    "amount": 10000,
+    "due": 5000,
+    "paymentDate": "2026-09-24",
+    "duePaymentDate": "2026-09-30",
+    "paymentMethod": "Cash",
+    "status": "Partially paid",
+    "remarks": "",
+    "submittedBy": "admin"
+  },
+  {
+    "id": 7,
+    "studentId": null,
+    "admissionNumber": "sep-20262302",
+    "studentName": "naveen",
+    "course": "sap",
+    "amount": 40000,
+    "due": 3000,
+    "paymentDate": "2026-09-24",
+    "duePaymentDate": "2026-09-30",
+    "paymentMethod": "Cash",
+    "status": "Paid",
+    "remarks": "",
+    "submittedBy": "admin"
   }
 ]

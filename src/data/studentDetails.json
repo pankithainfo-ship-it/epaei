@@ -128,5 +128,27 @@
     "qualification": "B.Tech Computer Science",
     "phone": "+91 98765 43219",
     "remarks": "Outstanding performance"
+  },
+  {
+    "id": 11,
+    "date": "2026-09-24",
+    "name": "prem",
+    "courses": [
+      "Computer Science"
+    ],
+    "qualification": "B.Tech Mechanical Engineering",
+    "phone": "+91 98765 43210",
+    "remarks": "his trying to join"
+  },
+  {
+    "id": 12,
+    "date": "2026-09-24",
+    "name": "naveen",
+    "courses": [
+      "Computer Science"
+    ],
+    "qualification": "b.com computers",
+    "phone": "8885132827",
+    "remarks": "his trying to joining the course after 1weak"
   }
 ]
