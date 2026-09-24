@@ -3,6 +3,7 @@ import StudentDetailsForm from './stddetailsform.jsx'
 import Dashboard, { EnrollmentDashboard } from './data/dashboard.jsx'
 import FeesDetails from './feesdetails.jsx'
 import AdmissionDetails from './admissiondetails.jsx'
+import RunningUpcomingDemoBatches from './running-upcoming-demo-batches.jsx'
 
 const _legacyStudentData = [
   {
@@ -263,6 +264,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
   const [showPaymentForm, setShowPaymentForm] = React.useState(false)
   const [showPayments, setShowPayments] = React.useState(false)
   const [showAdmissions, setShowAdmissions] = React.useState(false)
+  const [showBatches, setShowBatches] = React.useState(false)
   const rowsPerPage = 6
   const isAdmin = user.role === 'admin'
 
@@ -383,6 +385,9 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
                   Payment details
                 </button>
               )}
+              <button type="button" style={{ ...styles.analyseButton, background: '#7b61c9' }} onClick={() => setShowBatches(true)}>
+                Batch details
+              </button>
             </div>
           </div>
 
@@ -611,6 +616,18 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
           students={student}
           onClose={() => setShowPayments(false)}
         />
+      )}
+
+      {showBatches && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="batch-details-title">
+          <div className="dashboard-modal-panel batch-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="batch-details-title">Batch management</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowBatches(false)}>Close</button>
+            </div>
+            <RunningUpcomingDemoBatches />
+          </div>
+        </div>
       )}
     </div>
   )

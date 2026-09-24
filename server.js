@@ -1,3 +1,4 @@
+  const requiredFields = ['batchNumber', 'courseName', 'startingDate', 'endingDate', 'classTime', 'faculty', 'remarks', 'zoomLink', 'googleClassroomLink', 'classType']
 import http from 'http'
 import fs from 'fs'
 import path from 'path'
@@ -9,6 +10,7 @@ const authFilePath = path.join(__dirname, 'src', 'data', 'authUsers.json')
 const studentFilePath = path.join(__dirname, 'src', 'data', 'studentDetails.json')
 const paymentFilePath = path.join(__dirname, 'src', 'data', 'studentPayments.json')
 const admissionFilePath = path.join(__dirname, 'src', 'data', 'admissions.json')
+const batchFilePath = path.join(__dirname, 'src', 'data', 'batches.json')
 
 const sendJson = (res, statusCode, payload) => {
   res.writeHead(statusCode, {
@@ -54,6 +56,15 @@ const readAdmissions = () => {
 
 const writeAdmissions = (admissions) => {
   fs.writeFileSync(admissionFilePath, `${JSON.stringify(admissions, null, 2)}\n`)
+}
+
+const readBatches = () => {
+  const raw = fs.readFileSync(batchFilePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+const writeBatches = (batches) => {
+  fs.writeFileSync(batchFilePath, `${JSON.stringify(batches, null, 2)}\n`)
 }
 
 const server = http.createServer((req, res) => {
@@ -192,6 +203,67 @@ const server = http.createServer((req, res) => {
         sendJson(res, 201, { message: 'Admission saved successfully.', admission: newAdmission })
       } catch (error) {
         sendJson(res, 500, { message: 'Unable to save admission details', error: error.message })
+      }
+    })
+    return
+  }
+
+  if (req.url === '/api/batches' && req.method === 'GET') {
+    try {
+      sendJson(res, 200, readBatches())
+    } catch (error) {
+      sendJson(res, 500, { message: 'Unable to load batch details', error: error.message })
+    }
+    return
+  }
+
+  if (req.url === '/api/batches' && req.method === 'POST') {
+    let body = ''
+
+    req.on('data', (chunk) => {
+      body += chunk.toString()
+    })
+
+    req.on('end', () => {
+      try {
+        const incomingBatch = JSON.parse(body || '{}')
+        const requiredFields = ['batchNumber', 'courseName', 'startingDate', 'endingDate', 'classTime', 'remarks', 'zoomLink', 'googleClassroomLink', 'classType']
+
+        if (requiredFields.some((field) => !String(incomingBatch[field] || '').trim())) {
+          sendJson(res, 400, { message: 'Please complete all batch details.' })
+          return
+        }
+
+        if (incomingBatch.endingDate < incomingBatch.startingDate) {
+          sendJson(res, 400, { message: 'Ending date must be after the starting date.' })
+          return
+        }
+
+        const batches = readBatches()
+        const batchNumber = incomingBatch.batchNumber.trim()
+        if (batches.some((batch) => batch.batchNumber.toLowerCase() === batchNumber.toLowerCase())) {
+          sendJson(res, 409, { message: 'Batch number already exists.' })
+          return
+        }
+
+        const newBatch = {
+          id: batches.reduce((highestId, batch) => Math.max(highestId, batch.id), 0) + 1,
+          batchNumber,
+          courseName: incomingBatch.courseName.trim(),
+          startingDate: incomingBatch.startingDate,
+          endingDate: incomingBatch.endingDate,
+          classTime: incomingBatch.classTime,
+                    faculty: incomingBatch.faculty.trim(),
+          remarks: incomingBatch.remarks.trim(),
+          zoomLink: incomingBatch.zoomLink.trim(),
+          googleClassroomLink: incomingBatch.googleClassroomLink.trim(),
+          classType: incomingBatch.classType.trim(),
+        }
+
+        writeBatches([...batches, newBatch])
+        sendJson(res, 201, { message: 'Batch details saved successfully.', batch: newBatch })
+      } catch (error) {
+        sendJson(res, 500, { message: 'Unable to save batch details', error: error.message })
       }
     })
     return

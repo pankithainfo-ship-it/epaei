@@ -316,6 +316,58 @@
   font-weight: 700;
 }
 
+.batch-modal-panel { max-width: 1420px; }
+.batch-workspace { min-height: calc(100vh - 110px); padding: 30px clamp(18px, 4vw, 54px) 46px; background: #f4f6fb; color: #1b2638; }
+.batch-workspace-header, .batch-section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.batch-workspace-header { max-width: 1220px; margin: 0 auto 24px; }
+.batch-workspace-header h1 { margin: 0; color: #263751; font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: -0.06em; }
+.batch-workspace-header p:not(.dashboard-kicker) { margin-top: 10px; color: #66758b; font-family: Arial, sans-serif; font-size: 0.9rem; }
+.batch-counts { display: grid; min-width: 130px; padding: 14px 18px; border: 1px solid #dfe5ef; background: #fff; text-align: right; }
+.batch-counts strong { color: #2457d6; font-size: 1.8rem; line-height: 1; }
+.batch-counts span, .batch-section-heading > span { color: #78869b; font-family: Arial, sans-serif; font-size: 0.7rem; }
+.batch-tabs { max-width: 1220px; margin: 0 auto 16px; display: flex; gap: 4px; border-bottom: 1px solid #dfe5ef; }
+.batch-tabs button { padding: 12px 15px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #66758b; cursor: pointer; font-weight: 800; }
+.batch-tabs button span { display: inline-grid; min-width: 20px; margin-left: 5px; padding: 2px 5px; border-radius: 10px; background: #edf2fb; color: #4666a7; font-size: 0.68rem; }
+.batch-tabs .batch-tab-active { border-bottom-color: #2457d6; color: #2457d6; }
+.batch-entry-panel, .batch-list-panel { max-width: 1220px; margin: 0 auto 16px; padding: 24px; border: 1px solid #e2e7f0; background: rgba(255,255,255,0.88); box-shadow: 0 18px 50px rgba(43, 63, 96, 0.06); }
+.batch-list-action-row { max-width: 1220px; margin: 0 auto 16px; display: flex; justify-content: flex-end; }
+.batch-form-modal .batch-entry-panel { margin: 0; border: 0; box-shadow: none; }
+.batch-section-heading h2 { margin: 0; color: #263751; font-size: 1.45rem; }
+.batch-section-heading > span { padding-top: 5px; }
+.batch-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; margin-top: 22px; }
+.batch-form label { display: grid; gap: 6px; color: #596981; font-family: Arial, sans-serif; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; }
+.batch-form input, .batch-form select, .batch-form textarea { width: 100%; padding: 11px 12px; border: 1px solid #d9e0ec; border-radius: 4px; background: #fff; color: #263751; font-size: 0.86rem; font-weight: 400; text-transform: none; }
+.batch-form textarea { resize: vertical; }
+.batch-wide-field { grid-column: 1 / -1; }
+.batch-form-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.batch-success { color: #1e8d61; font-family: Arial, sans-serif; font-size: 0.8rem; font-weight: 700; }
+.batch-error { color: #b42318; font-family: Arial, sans-serif; font-size: 0.8rem; font-weight: 700; }
+.batch-table-wrap { overflow-x: auto; margin-top: 20px; }
+.batch-table { width: 100%; min-width: 980px; border-collapse: collapse; background: #fff; font-family: Arial, sans-serif; }
+.batch-table th { padding: 12px; background: #edf2fb; color: #596981; font-size: 0.68rem; text-align: left; text-transform: uppercase; letter-spacing: 0.06em; }
+.batch-table td { padding: 13px 12px; border-bottom: 1px solid #edf0f5; color: #31425d; font-size: 0.78rem; vertical-align: top; }
+.batch-table td strong { color: #1e3767; }
+.batch-status { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 0.68rem; font-weight: 800; }
+.batch-status-running { background: #e8f7ef; color: #1e8d61; }
+.batch-status-upcoming { background: #edf2fb; color: #2457d6; }
+.batch-status-completed { background: #f1f3f6; color: #69788e; }
+.batch-links { display: grid; gap: 5px; }
+.batch-links a { color: #2457d6; font-weight: 700; text-decoration: none; }
+.batch-empty { margin: 24px 0 4px; color: #8793a6; font-family: Arial, sans-serif; font-size: 0.82rem; }
+
+@media (max-width: 850px) {
+  .batch-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .batch-workspace-header, .batch-section-heading { flex-direction: column; }
+  .batch-counts { text-align: left; }
+  .batch-tabs { overflow-x: auto; }
+  .batch-tabs button { white-space: nowrap; }
+  .batch-entry-panel, .batch-list-panel { padding: 18px; }
+  .batch-form { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 1050px) {
   .admission-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
