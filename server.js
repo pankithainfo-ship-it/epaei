@@ -11,6 +11,7 @@ const studentFilePath = path.join(__dirname, 'src', 'data', 'studentDetails.json
 const paymentFilePath = path.join(__dirname, 'src', 'data', 'studentPayments.json')
 const admissionFilePath = path.join(__dirname, 'src', 'data', 'admissions.json')
 const batchFilePath = path.join(__dirname, 'src', 'data', 'batches.json')
+const facultyAvailabilityFilePath = path.join(__dirname, 'src', 'data', 'facultyAvailability.json')
 
 const sendJson = (res, statusCode, payload) => {
   res.writeHead(statusCode, {
@@ -65,6 +66,15 @@ const readBatches = () => {
 
 const writeBatches = (batches) => {
   fs.writeFileSync(batchFilePath, `${JSON.stringify(batches, null, 2)}\n`)
+}
+
+const readFacultyAvailability = () => {
+  const raw = fs.readFileSync(facultyAvailabilityFilePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+const writeFacultyAvailability = (availability) => {
+  fs.writeFileSync(facultyAvailabilityFilePath, `${JSON.stringify(availability, null, 2)}\n`)
 }
 
 const server = http.createServer((req, res) => {
@@ -264,6 +274,55 @@ const server = http.createServer((req, res) => {
         sendJson(res, 201, { message: 'Batch details saved successfully.', batch: newBatch })
       } catch (error) {
         sendJson(res, 500, { message: 'Unable to save batch details', error: error.message })
+      }
+    })
+    return
+  }
+
+  if (req.url === '/api/faculty-availability' && req.method === 'GET') {
+    try {
+      sendJson(res, 200, readFacultyAvailability())
+    } catch (error) {
+      sendJson(res, 500, { message: 'Unable to load faculty availability', error: error.message })
+    }
+    return
+  }
+
+  if (req.url === '/api/faculty-availability' && req.method === 'POST') {
+    let body = ''
+
+    req.on('data', (chunk) => {
+      body += chunk.toString()
+    })
+
+    req.on('end', () => {
+      try {
+        const incomingAvailability = JSON.parse(body || '{}')
+        const requiredFields = ['faculty', 'date', 'startTime', 'endTime']
+        if (requiredFields.some((field) => !String(incomingAvailability[field] || '').trim())) {
+          sendJson(res, 400, { message: 'Please complete the faculty name, date, and free-time range.' })
+          return
+        }
+
+        if (incomingAvailability.endTime <= incomingAvailability.startTime) {
+          sendJson(res, 400, { message: 'End time must be later than start time.' })
+          return
+        }
+
+        const availability = readFacultyAvailability()
+        const newAvailability = {
+          id: availability.reduce((highestId, record) => Math.max(highestId, record.id), 0) + 1,
+          faculty: incomingAvailability.faculty.trim(),
+          date: incomingAvailability.date,
+          startTime: incomingAvailability.startTime,
+          endTime: incomingAvailability.endTime,
+          notes: String(incomingAvailability.notes || '').trim(),
+        }
+
+        writeFacultyAvailability([...availability, newAvailability])
+        sendJson(res, 201, { message: 'Faculty free time saved successfully.', availability: newAvailability })
+      } catch (error) {
+        sendJson(res, 500, { message: 'Unable to save faculty availability', error: error.message })
       }
     })
     return
@@ -486,7 +545,7 @@ const server = http.createServer((req, res) => {
   sendJson(res, 404, { message: 'Route not found' })
 })
 
-const port = 3001
+const port = Number(process.env.PORT) || 3001
 server.listen(port, () => {
   console.log(`Auth server running on http://localhost:${port}`)
 })

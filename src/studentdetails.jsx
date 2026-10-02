@@ -4,6 +4,7 @@ import Dashboard, { EnrollmentDashboard } from './data/dashboard.jsx'
 import FeesDetails from './feesdetails.jsx'
 import AdmissionDetails from './admissiondetails.jsx'
 import RunningUpcomingDemoBatches from './running-upcoming-demo-batches.jsx'
+import FacultyDetails from './facultydetails.jsx'
 
 const _legacyStudentData = [
   {
@@ -154,14 +155,14 @@ const styles = {
   },
   userLabel: {
     fontSize: '11px',
-    color: '#5d6470',
+    color: '#134fb6',
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
     fontWeight: 700,
   },
   userName: {
     fontSize: '14px',
-    color: '#23303b',
+    color: '#7a8a98',
     fontWeight: 700,
   },
   logoutButton: {
@@ -179,23 +180,25 @@ const styles = {
     fontSize: '2rem',
     letterSpacing: '-0.06em',
   },
-  addButton: {
-    padding: '11px 16px',
-    border: 0,
-    borderRadius: '10px',
-    background: '#23303b',
-    color: '#fff',
+  actionButton: {
+    padding: '10px 16px',
+    border: 'none',
+    borderRadius: '12px',
+    background: '#dadada',
+    color: '#747577',
     fontWeight: 700,
     cursor: 'pointer',
-  },
-  analyseButton: {
-    padding: '11px 16px',
-    border: 0,
-    borderRadius: '10px',
-    background: '#2457d6',
-    color: '#fff',
-    fontWeight: 700,
-    cursor: 'pointer',
+    letterSpacing: '-0.02em',
+    minHeight: '42px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: 'none',
+    transition: 'opacity 0.2s ease',
+    fontSize: '0.9rem',
+    lineHeight: 1.2,
+    whiteSpace: 'nowrap',
+    fontFamily: 'Segoe UI, Arial, sans-serif',
   },
   searchBox: {
     width: '320px',
@@ -265,6 +268,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
   const [showPayments, setShowPayments] = React.useState(false)
   const [showAdmissions, setShowAdmissions] = React.useState(false)
   const [showBatches, setShowBatches] = React.useState(false)
+  const [showFacultyDetails, setShowFacultyDetails] = React.useState(false)
   const rowsPerPage = 6
   const isAdmin = user.role === 'admin'
 
@@ -352,7 +356,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
           <div style={styles.headerRow}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
               <h1 style={styles.title}>Equiry Details</h1>
-              <button type="button" style={styles.addButton} onClick={() => {
+              <button type="button" style={styles.actionButton} onClick={() => {
                 setEditingStudent(null)
                 setShowForm(true)
               }}>
@@ -360,32 +364,35 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
               </button>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <button type="button" style={styles.analyseButton} onClick={() => setShowDashboard(true)}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'nowrap', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+              <button type="button" style={styles.actionButton} onClick={() => setShowDashboard(true)}>
                 Admissions & payments dashboard
               </button>
-              <button type="button" style={{ ...styles.analyseButton, background: '#53637b' }} onClick={() => setShowEnrollmentDashboard(true)}>
+              <button type="button" style={styles.actionButton} onClick={() => setShowEnrollmentDashboard(true)}>
                 Enrollment analysis
               </button>
-              <button type="button" style={styles.analyseButton} onClick={() => {
+              <button type="button" style={styles.actionButton} onClick={() => {
                 setShowPaymentForm((visible) => !visible)
                 setShowAdmissions(false)
               }}>
-              Make Payment
+                Make Payment
               </button>
-              <button type="button" style={{ ...styles.analyseButton, background: '#b56736' }} onClick={() => {
+              <button type="button" style={styles.actionButton} onClick={() => {
                 setShowAdmissions((visible) => !visible)
                 setShowPaymentForm(false)
               }}>
                 Admission details
               </button>
               {isAdmin && (
-                <button type="button" style={{ ...styles.analyseButton, background: '#1e8d61' }} onClick={() => setShowPayments(true)}>
+                <button type="button" style={styles.actionButton} onClick={() => setShowPayments(true)}>
                   Payment details
                 </button>
               )}
-              <button type="button" style={{ ...styles.analyseButton, background: '#7b61c9' }} onClick={() => setShowBatches(true)}>
+              <button type="button" style={styles.actionButton} onClick={() => setShowBatches(true)}>
                 Batch details
+              </button>
+              <button type="button" style={styles.actionButton} onClick={() => setShowFacultyDetails(true)}>
+                Faculty details
               </button>
             </div>
           </div>
@@ -625,6 +632,18 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
               <button type="button" className="dashboard-modal-close" onClick={() => setShowBatches(false)}>Close</button>
             </div>
             <RunningUpcomingDemoBatches />
+          </div>
+        </div>
+      )}
+
+      {showFacultyDetails && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="faculty-details-title">
+          <div className="dashboard-modal-panel faculty-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="faculty-details-title">Faculty schedule</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowFacultyDetails(false)}>Close</button>
+            </div>
+            <FacultyDetails />
           </div>
         </div>
       )}
