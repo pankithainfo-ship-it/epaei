@@ -20,5 +20,31 @@
     "zoomLink": "https://www.jeevanit.com",
     "googleClassroomLink": "https://www.jeevanit.com",
     "classType": "Upcoming batch"
+  },
+  {
+    "id": 3,
+    "batchNumber": "python01",
+    "courseName": "python",
+    "startingDate": "2026-10-01",
+    "endingDate": "2026-11-01",
+    "classTime": "10:00",
+    "faculty": "jeevan",
+    "remarks": "any batch",
+    "zoomLink": "https://www.jeevanit.com",
+    "googleClassroomLink": "https://www.jeevanit.com",
+    "classType": "Batch"
+  },
+  {
+    "id": 4,
+    "batchNumber": "python02",
+    "courseName": "python",
+    "startingDate": "2026-10-01",
+    "endingDate": "2026-11-01",
+    "classTime": "10:00",
+    "faculty": "jeevan",
+    "remarks": "current batch",
+    "zoomLink": "https://www.jeevanit.com",
+    "googleClassroomLink": "https://www.jeevanit.com",
+    "classType": "Batch"
   }
 ]
