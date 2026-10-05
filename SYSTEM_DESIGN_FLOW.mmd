@@ -1,0 +1,79 @@
+flowchart LR
+    User["Student, employee, or admin"]
+    Browser["Web browser"]
+
+    subgraph Frontend["React application (Vite)"]
+        Auth["Sign-in / registration"]
+        AuthCheck{"Credentials match?"}
+        Workspace["Authenticated workspace<br/>(in-memory user state)"]
+        Enquiries["Enquiry / student management"]
+        Admissions["Admissions"]
+        Payments["Payment entry and review"]
+        Faculty["Faculty schedules"]
+        Dashboards["Admissions / payments dashboard"]
+        Analytics["Faculty analytics"]
+        StaticEnrollment["Enrollment analysis<br/>(static import)"]
+
+        Auth --> AuthCheck
+        AuthCheck -->|Yes| Workspace
+        AuthCheck -->|No| Auth
+        Workspace --> Enquiries
+        Workspace --> Admissions
+        Workspace --> Payments
+        Workspace --> Faculty
+        Workspace --> Dashboards
+        Workspace --> Analytics
+        Workspace --> StaticEnrollment
+    end
+
+    subgraph Backend["Node.js HTTP API (server.js, port 3001)"]
+        API["JSON over HTTP<br/>/api/* routes"]
+        Validate["Route handling and<br/>selected field validation"]
+    end
+
+    subgraph Persistence["Local JSON files (src/data)"]
+        Users[("authUsers.json")]
+        Students[("studentDetails.json")]
+        AdmissionData[("admissions.json")]
+        PaymentData[("studentPayments.json")]
+        BatchData[("batches.json")]
+        AvailabilityData[("facultyAvailability.json")]
+    end
+
+    User --> Browser
+    Browser --> Auth
+    Auth -->|GET /users: fetch user list| API
+    Auth -->|POST /users: register| API
+    Validate -->|Read / write users| Users
+    Users -->|User list| Auth
+
+    Enquiries -->|GET /students| API
+    Enquiries -->|POST /students, PUT /students/:id,<br/>DELETE /students/:id| API
+    Admissions -->|GET /admissions, POST /admissions| API
+    Payments -->|GET /payments, POST /payments| API
+    Dashboards -->|GET /admissions| API
+    Dashboards -->|GET /payments (admin view)| API
+    Faculty -->|GET /batches, POST /batches| API
+    Faculty -->|GET /faculty-availability,<br/>POST /faculty-availability| API
+    Analytics -->|GET /batches| API
+    Analytics -->|GET /faculty-availability| API
+
+    API --> Validate
+    Validate -->|Read / write enquiries| Students
+    Validate -->|Read / write admissions| AdmissionData
+    Validate -->|Read / write payments| PaymentData
+    Validate -->|Read / write batches| BatchData
+    Validate -->|Read / write availability| AvailabilityData
+    AdmissionData -->|Admission records| Admissions
+    AdmissionData -->|Admission and payment data| Dashboards
+    API -->|Payments enriched from admissions / enquiries| Dashboards
+    PaymentData -->|Payment records| Payments
+    BatchData -->|Batch records| Faculty
+    BatchData -->|Batch records for status / course analysis| Analytics
+    AvailabilityData -->|Availability records| Faculty
+    AvailabilityData -->|Availability for weekday / hours analysis| Analytics
+    Students -->|Local static import| StaticEnrollment
+
+    classDef limitation fill:#fff3cd,stroke:#b8860b,color:#333;
+    AuthCheck:::limitation
+    StaticEnrollment:::limitation
