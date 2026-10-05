@@ -18,9 +18,42 @@
   display: flex;
 }
 
+.student-dashboard-actions {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.student-header-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.student-header-search {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.student-action-button:hover {
+  border-color: #aeb7c3 !important;
+  background: #f8f9fb !important;
+}
+
 @media (max-width: 650px) {
   .student-page { padding: 16px 10px 28px; }
   .student-page-topbar { justify-content: space-between; }
+  .student-dashboard-actions { justify-content: flex-start; gap: 6px; }
+  .student-header-title { align-items: flex-start; }
+  .student-action-button { min-height: 34px !important; padding: 7px 10px !important; font-size: 0.72rem !important; }
+  .student-header-search input { width: 100% !important; }
 }
 
 .dashboard-page {
@@ -356,6 +389,7 @@
 .batch-empty { margin: 24px 0 4px; color: #8793a6; font-family: Arial, sans-serif; font-size: 0.82rem; }
 
 .faculty-modal-panel { max-width: 1460px; }
+.faculty-analytics-modal-panel { max-width: 1460px; }
 .faculty-workspace { min-height: calc(100vh - 110px); padding: 30px clamp(18px, 4vw, 54px) 46px; background: #f4f6fb; color: #1b2638; }
 .faculty-workspace-header { max-width: 1280px; margin: 0 auto 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; }
 .faculty-workspace-header h1 { margin: 0; color: #263751; font-size: 2.4rem; }
@@ -388,15 +422,34 @@
 .faculty-form textarea { resize: vertical; }
 .faculty-form-wide { grid-column: 1 / -1; }
 .faculty-form-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.faculty-analytics { padding: 30px clamp(18px, 4vw, 54px) 46px; background: #f4f6fb; color: #1b2638; }
+.faculty-analytics-header { max-width: 1280px; margin: 0 auto 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 22px; }
+.faculty-analytics-header h1 { color: #263751; font-size: 2.2rem; }
+.faculty-analytics-header > div > p:last-child { margin-top: 9px; color: #66758b; font-family: Arial, sans-serif; font-size: 0.88rem; }
+.faculty-analytics-header .dashboard-select-label select { min-width: 190px; }
+.faculty-analytics-stats { max-width: 1280px; margin: 0 auto 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.faculty-analytics-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.faculty-analytics-card { min-width: 0; }
+.faculty-analytics-card .pie-layout { justify-content: flex-start; }
+.faculty-analytics-card .chart-legend { min-width: 0; overflow-wrap: anywhere; }
+.faculty-analytics-card .pie-chart { width: 180px; height: 180px; }
+.faculty-analytics-card .pie-hole { width: 100px; height: 100px; }
+.faculty-analytics-modal-panel { max-height: 94vh; overflow-y: auto; }
 
 @media (max-width: 1000px) {
   .faculty-schedule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .faculty-schedule-panel:last-child { grid-column: 1 / -1; }
+  .faculty-analytics-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 650px) {
   .faculty-workspace { padding: 22px 12px 30px; }
   .faculty-workspace-header { align-items: stretch; flex-direction: column; }
+  .faculty-analytics { padding: 22px 12px 30px; }
+  .faculty-analytics-header { align-items: stretch; flex-direction: column; }
+  .faculty-analytics-header h1 { font-size: 2rem; }
+  .faculty-analytics-header .dashboard-select-label select { width: 100%; }
+  .faculty-analytics-stats { grid-template-columns: 1fr; }
   .faculty-workspace-header h1 { font-size: 2rem; }
   .faculty-header-actions { align-items: stretch; flex-direction: column; }
   .faculty-select-label select { width: 100%; }
