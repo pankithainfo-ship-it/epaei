@@ -5,6 +5,7 @@ import FeesDetails from './feesdetails.jsx'
 import AdmissionDetails from './admissiondetails.jsx'
 import RunningUpcomingDemoBatches from './running-upcoming-demo-batches.jsx'
 import FacultyDetails from './facultydetails.jsx'
+import FacultyAnalytics from './data/faculty-analytics.jsx'
 
 const _legacyStudentData = [
   {
@@ -122,10 +123,9 @@ const styles = {
   },
   headerRow: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'stretch',
     gap: '16px',
-    flexWrap: 'wrap',
   },
   userInfo: {
     display: 'flex',
@@ -181,23 +181,21 @@ const styles = {
     letterSpacing: '-0.06em',
   },
   actionButton: {
-    padding: '10px 16px',
-    border: 'none',
-    borderRadius: '12px',
-    background: '#dadada',
-    color: '#747577',
-    fontWeight: 700,
+    padding: '8px 15px',
+    border: '1px solid #d7d7d7',
+    borderRadius: '999px',
+    background: '#fff',
+    color: '#34383d',
+    fontWeight: 500,
     cursor: 'pointer',
-    letterSpacing: '-0.02em',
-    minHeight: '42px',
+    minHeight: '38px',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: 'none',
-    transition: 'opacity 0.2s ease',
-    fontSize: '0.9rem',
+    transition: 'background-color 0.2s ease, border-color 0.2s ease',
+    fontSize: '0.82rem',
     lineHeight: 1.2,
-    whiteSpace: 'nowrap',
     fontFamily: 'Segoe UI, Arial, sans-serif',
   },
   searchBox: {
@@ -269,6 +267,7 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
   const [showAdmissions, setShowAdmissions] = React.useState(false)
   const [showBatches, setShowBatches] = React.useState(false)
   const [showFacultyDetails, setShowFacultyDetails] = React.useState(false)
+  const [showFacultyAnalytics, setShowFacultyAnalytics] = React.useState(false)
   const rowsPerPage = 6
   const isAdmin = user.role === 'admin'
 
@@ -355,9 +354,9 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
       <div style={styles.wrapper}>
         <div style={styles.header}>
           <div style={styles.headerRow}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <div className="student-header-title">
               <h1 style={styles.title}>Equiry Details</h1>
-              <button type="button" style={styles.actionButton} onClick={() => {
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => {
                 setEditingStudent(null)
                 setShowForm(true)
               }}>
@@ -365,40 +364,43 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
               </button>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'nowrap', overflowX: 'auto', whiteSpace: 'nowrap' }}>
-              <button type="button" style={styles.actionButton} onClick={() => setShowDashboard(true)}>
+            <div className="student-dashboard-actions">
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => setShowDashboard(true)}>
                 Admissions & payments dashboard
               </button>
-              <button type="button" style={styles.actionButton} onClick={() => setShowEnrollmentDashboard(true)}>
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => setShowEnrollmentDashboard(true)}>
                 Enrollment analysis
               </button>
-              <button type="button" style={styles.actionButton} onClick={() => {
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => {
                 setShowPaymentForm((visible) => !visible)
                 setShowAdmissions(false)
               }}>
                 Make Payment
               </button>
-              <button type="button" style={styles.actionButton} onClick={() => {
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => {
                 setShowAdmissions((visible) => !visible)
                 setShowPaymentForm(false)
               }}>
                 Admission details
               </button>
               {isAdmin && (
-                <button type="button" style={styles.actionButton} onClick={() => setShowPayments(true)}>
+                <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => setShowPayments(true)}>
                   Payment details
                 </button>
               )}
-              <button type="button" style={styles.actionButton} onClick={() => setShowBatches(true)}>
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => setShowBatches(true)}>
                 Batch details
               </button>
-              <button type="button" style={styles.actionButton} onClick={() => setShowFacultyDetails(true)}>
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => setShowFacultyDetails(true)}>
                 Faculty details
+              </button>
+              <button type="button" className="student-action-button" style={styles.actionButton} onClick={() => setShowFacultyAnalytics(true)}>
+                Faculty analytics
               </button>
             </div>
           </div>
 
-          <div style={{ marginTop: '18px', display: 'flex', justifyContent: 'flex-end' }}>
+          <div className="student-header-search">
             <input
               type="text"
               value={searchTerm}
@@ -645,6 +647,17 @@ const StudentDetails = ({ user = { username: 'Student', role: 'student' }, onLog
               <button type="button" className="dashboard-modal-close" onClick={() => setShowFacultyDetails(false)}>Close</button>
             </div>
             <FacultyDetails />
+          </div>
+        </div>
+      )}
+      {showFacultyAnalytics && (
+        <div className="dashboard-modal" role="dialog" aria-modal="true" aria-labelledby="faculty-analytics-title">
+          <div className="dashboard-modal-panel faculty-analytics-modal-panel">
+            <div className="dashboard-modal-toolbar">
+              <h2 id="faculty-analytics-title">Faculty analytics</h2>
+              <button type="button" className="dashboard-modal-close" onClick={() => setShowFacultyAnalytics(false)}>Close</button>
+            </div>
+            <FacultyAnalytics />
           </div>
         </div>
       )}
